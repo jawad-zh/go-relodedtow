@@ -2,60 +2,43 @@ package goreloaded
 
 import (
 	"strings"
+	"unicode"
 )
 
-func Quote(tokens []string) []string {
-	var result []string
-	i := 0
-	for i < len(tokens) {
-		if tokens[i] == "'" {
-			// Find closing quote or end
-			j := i + 1
-			for j < len(tokens) && tokens[j] != "'" {
-				j++
-			}
+func Quote(text string) []string {
+    statut := false
+    var result []rune
+    slice := []rune(text)
+    for i := 0; i < len(slice); i++ {
+        if slice[i] == '\'' && (i+1 < len(slice) && i-1 >= 0) && (unicode.IsLetter(slice[i+1]) && unicode.IsLetter(slice[i-1])) {
+            result = append(result, rune(slice[i]))
+            i++
+        }
+        if slice[i] == '\'' {
+            if !statut {
+                statut = true
+                if i-1 >= 0 && slice[i-1] != ' ' && len(result) > 0 && result[len(result)-1] != ' ' {
+                    result = append(result, ' ')
+                }
+                result = append(result, rune(slice[i]))
+                if i+1 < len(slice) && slice[i+1] == ' ' {
+                    i++
+                }
+            } else {
+                statut = false
+                if len(result) > 0 && result[len(result)-1] == ' ' {
+                    result = result[:len(result)-1]
+                }
+                result = append(result, rune(slice[i]))
+                if (i+1 < len(slice)) && (slice[i+1] != ' ' && slice[i+1] != '\n' && !Only(string(slice[i+1]))) {
+                    result = append(result, ' ')
+                }
+            }
+        } else {
+            result = append(result, rune(slice[i]))
+        }
+    }
+    sliceRes := strings.Split(string(result), " ")
 
-			if j == len(tokens) {
-				// No closing quote found - take till end
-				j = len(tokens)
-			}
-
-			insideTokens := tokens[i+1 : j]
-
-			// Case 1: if insideTokens are all single quotes or empty, count pairs of quotes
-			if allSingleQuotes(insideTokens) {
-				count := len(insideTokens)
-				for k := 0; k < count/2; k++ {
-					result = append(result, "''")
-				}
-				if count%2 == 1 {
-					result = append(result, "'")
-				}
-			} else {
-				// Trim spaces inside each token before joining
-				for k := range insideTokens {
-					insideTokens[k] = strings.TrimSpace(insideTokens[k])
-				}
-				joined := strings.Join(insideTokens, " ")
-				joined = strings.TrimSpace(joined)
-				quoted := "'" + joined + "'"
-				result = append(result, quoted)
-			}
-
-			i = j + 1
-		} else {
-			result = append(result, tokens[i])
-			i++
-		}
-	}
-	return result
-}
-
-func allSingleQuotes(tokens []string) bool {
-	for _, t := range tokens {
-		if t != "'" {
-			return false
-		}
-	}
-	return true
+    return sliceRes
 }

@@ -9,8 +9,8 @@ import (
 func Convert(s []string) []string {
 	for i := 0; i < len(s); i++ {
 		// word := strings.ToLower(s[i])
-
-		if i > 0 && (s[i] == "(up)") {
+        
+			if i > 0 && (s[i] == "(up)") {
 			s[i-1] = strings.ToUpper(s[i-1])
 			s[i] = ""
 			s = Rmov(s)
@@ -163,6 +163,7 @@ func Convert(s []string) []string {
 
 		}
 	}
+		
 	return s
 }
 
