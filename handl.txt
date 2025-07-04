@@ -35,4 +35,9 @@ aksfjasf -- (cap) ​✅
 kljhlj , (cap) 
 if there is more than one punc 9sm
 atoi ✅
+quote ✅
 delet \n
+out of range 
+the flags 
+result.txt ✅
+protect main ✅
