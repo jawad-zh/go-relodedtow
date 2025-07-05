@@ -87,7 +87,8 @@ func Convert(s []string) []string {
 			s[i] = ""
 			s[i+1] = ""
 			s = Rmov(s)
-			i--
+			i=-1
+
 		}
 	}
 	return s

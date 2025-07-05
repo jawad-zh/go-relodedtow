@@ -38,22 +38,20 @@ func main() {
 		return
 	}
 	txt := string(content)
-
-	clean := goreloaded.Clean(txt)
-	clean = goreloaded.Convert(clean)
-	txt = strings.Join(clean, " ")
-	clean = goreloaded.SplitPunc(txt)
-	clean = goreloaded.Punc(clean)
-	clean = goreloaded.AtoAn(clean)
-	txt = strings.Join(clean, " ")
-	clean = goreloaded.Quote(txt)
-	finalOutput := goreloaded.JoinCleaned(clean)
-	err = os.WriteFile(outputFile, []byte(finalOutput), 0644)
+	contentSplit := strings.Split(txt, "\n")
+	transfor := ""
+	for i, x := range contentSplit {
+		next := goreloaded.Process(x)
+		transfor += next
+		if i != len(contentSplit) {
+			transfor += " \n"
+		}
+	}
+	err = os.WriteFile(outputFile, []byte(transfor), 0o644)
 	if err != nil {
 		fmt.Println("Error writing to output file:", err)
 		return
 	}
 
 	fmt.Printf("Processing complete. Output written to %s\n", outputFile)
-	fmt.Printf("%q",clean)
 }

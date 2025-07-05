@@ -8,11 +8,13 @@ import (
 func Quote(text string) []string {
     statut := false
     var result []rune
+    
     slice := []rune(text)
     for i := 0; i < len(slice); i++ {
         if slice[i] == '\'' && (i+1 < len(slice) && i-1 >= 0) && (unicode.IsLetter(slice[i+1]) && unicode.IsLetter(slice[i-1])) {
             result = append(result, rune(slice[i]))
-            i++
+            // i++
+            continue
         }
         if slice[i] == '\'' {
             if !statut {
