@@ -6,14 +6,14 @@ func SplitPunc(s string) []string {
 	runes := []rune(s)
 	for i := 0; i < len(runes); i++ {
 		char := runes[i]
-		if char != ' ' && !Only(string(char)) {
+		if char != ' ' && !Only(string(char)) && char != '\n' {
 			word += string(char)
 		} else {
 			if word != "" {
 				words = append(words, word)
 				word = ""
 			}
-			if Only(string(char)) {
+			if Only(string(char)) || char == '\n'{
 				words = append(words, string(char))
 			}
 		}

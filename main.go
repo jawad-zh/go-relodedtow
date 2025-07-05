@@ -55,4 +55,5 @@ func main() {
 	}
 
 	fmt.Printf("Processing complete. Output written to %s\n", outputFile)
+	fmt.Printf("%q",clean)
 }
