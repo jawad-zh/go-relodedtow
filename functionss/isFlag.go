@@ -11,7 +11,7 @@ func CorrectEnd(s string) bool {
 	}
 	return false
 }
-func IsFlag(s []string) bool {
+func IsFlag(s []string ) bool {
 	for i := 0; i < len(s); i++ {
 		if (s[i] == "(up," && i+1 < len(s)) && CorrectEnd(s[i+1]) {
 			return true

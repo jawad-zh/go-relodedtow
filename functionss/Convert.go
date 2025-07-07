@@ -73,7 +73,7 @@ func Convert(s []string) []string {
 			nStr := strings.TrimSuffix(s[i+1], ")")
 			n, err := strconv.Atoi(nStr)
 			if err != nil {
-				fmt.Println("Error Case:", err)
+				
 				continue
 			}
 			switch s[i] {

@@ -1,6 +1,5 @@
 package goreloaded
 
-
 func JoinCleaned(words []string) string {
 	var result string
 	for i, w := range words {

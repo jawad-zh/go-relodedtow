@@ -13,18 +13,10 @@ func main() {
 		fmt.Println("Usage: go run main.go <input-file.txt> <output-file.txt>")
 		return
 	}
-
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
-	if !strings.HasSuffix(strings.ToLower(inputFile), ".txt") {
-		fmt.Println("Error: You can only run this program with a .txt input file!")
-		return
-	}
-	if strings.HasSuffix(strings.ToLower(outputFile), ".go") {
-		fmt.Println("Error: Output file cannot have a '.go' extension!")
-		return
-	}
-	if !strings.HasSuffix(strings.ToLower(outputFile), ".txt") {
+	
+	if !strings.HasSuffix(outputFile, ".txt") {
 		fmt.Println("Error: Output file must have a '.txt' extension!")
 		return
 	}
@@ -38,20 +30,20 @@ func main() {
 		return
 	}
 	txt := string(content)
-	contentSplit := strings.Split(txt, "\n")
-	transfor := ""
-	for i, x := range contentSplit {
-		next := goreloaded.Process(x)
-		transfor += next
-		if i != len(contentSplit) {
-			transfor += " \n"
-		}
-	}
-	err = os.WriteFile(outputFile, []byte(transfor), 0o644)
+		clean := goreloaded.Clean(txt)
+	clean = goreloaded.Convert(clean)
+	txt = goreloaded.JoinCleaned(clean)
+	clean = goreloaded.SplitPunc(txt)
+	clean = goreloaded.Punc(clean)
+	txt = goreloaded.JoinCleaned(clean)
+	clean = goreloaded.Quote(clean)
+	clean = goreloaded.AtoAn(clean)
+	txt = goreloaded.JoinCleaned(clean)
+	err = os.WriteFile(outputFile, []byte(txt), 0o644)
 	if err != nil {
 		fmt.Println("Error writing to output file:", err)
 		return
 	}
-
 	fmt.Printf("Processing complete. Output written to %s\n", outputFile)
+
 }
