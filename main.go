@@ -15,7 +15,7 @@ func main() {
 	}
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
-	
+
 	if !strings.HasSuffix(outputFile, ".txt") {
 		fmt.Println("Error: Output file must have a '.txt' extension!")
 		return
@@ -30,20 +30,18 @@ func main() {
 		return
 	}
 	txt := string(content)
-		clean := goreloaded.Clean(txt)
-	clean = goreloaded.Convert(clean)
-	txt = goreloaded.JoinCleaned(clean)
-	clean = goreloaded.SplitPunc(txt)
-	clean = goreloaded.Punc(clean)
-	txt = goreloaded.JoinCleaned(clean)
-	clean = goreloaded.Quote(clean)
-	clean = goreloaded.AtoAn(clean)
-	txt = goreloaded.JoinCleaned(clean)
-	err = os.WriteFile(outputFile, []byte(txt), 0o644)
+	split := strings.Split(txt, "\n")
+	NewData := ""
+	for i, x := range split {
+		NewData += goreloaded.Prossec(x)
+		if i != len(split)-1 {
+			NewData += "\n"
+		}
+	}
+	err = os.WriteFile(outputFile, []byte(NewData), 0o644)
 	if err != nil {
 		fmt.Println("Error writing to output file:", err)
 		return
 	}
 	fmt.Printf("Processing complete. Output written to %s\n", outputFile)
-
 }

@@ -2,6 +2,7 @@ package goreloaded
 
 import (
 	"strings"
+	"unicode"
 )
 
 // func Quote(text string) []string {
@@ -46,46 +47,45 @@ import (
 //     return sliceRes
 // }
 
-
-func Quote(reloaded []string) []string {
-    s := strings.Join(reloaded, " ")
-    var open bool
-    index := 0
-    var str string
-    for i, c := range s {
-        if i != len(s)-1 && i != 0 {
-            if !open {
-                if c == '\'' && (s[i+1] == ' ' || s[i-1] == ' ' || s[i+1] == '\'' || s[i-1] == '\'' || Only(string(s[i+1])) || Only(string(s[i-1]))) {
-                    str += s[index:i]
-                    open = true
-                    index = i
-                }
-            } else if open && c == '\'' && (s[i+1] == ' ' || s[i-1] == ' ' || s[i+1] == '\'' || s[i-1] == '\'' || Only(string(s[i+1])) || Only(string(s[i-1]))){
-                if Only(string(s[i+1])) || Only(string(s[i-1])) {
-                    str += " " + "'" + strings.TrimSpace(s[index+1:i]) + "'"
-                    open = false
-                    index = i + 1
-                    continue
-                }
-                str += " " + "'" + strings.TrimSpace(s[index+1:i]) + "'" + " "
-                open = false
-                index = i + 1
-                continue
-            }
-        } else if i == 0 {
-            if c == '\'' {
-                str += s[index:i]
-                open = true
-                index = i
-            }
-        }
-        if i == len(s)-1 {
-            if open && c == '\'' {
-                str += " " + "'" + strings.TrimSpace(s[index+1:len(s)-1]) + "'"
-            } else {
-                str += s[index:]
-            }
-        }
-    }
-    return strings.Fields(str)
+func QuoteFmt(text string) string {
+	res := ""
+	temp := ""
+	runes := []rune(text)
+	clfound := false
+	for i := 0; i < len(runes); i++ {
+		if runes[i] == '\'' {
+			if i > 0 && i < len(runes)-1 {
+				if (unicode.IsLetter(runes[i+1]) || unicode.IsDigit(runes[i+1])) && (unicode.IsLetter(runes[i-1]) || unicode.IsDigit(runes[i-1])) {
+					res += string(runes[i])
+					continue
+				}
+			}
+			if i < len(runes)-1 {
+				clfound = false
+				for j := i + 1; j < len(runes); j++ {
+					if runes[j] == '\'' {
+						if j > 0 && j < len(runes)-1 && (unicode.IsLetter(runes[j-1]) || unicode.IsDigit(runes[j-1])) && (unicode.IsLetter(runes[j+1]) || unicode.IsDigit(runes[j+1])) {
+							temp += "'"
+							continue
+						}
+						clfound = true
+						i = j
+						break
+					}
+					temp += string(runes[j])
+				}
+				if clfound {
+					temp = strings.TrimSpace(temp)
+					res += "'" + temp + "'"
+					if i+1 < len(runes) && (unicode.IsLetter(runes[i+1]) || unicode.IsDigit(runes[i+1]) || runes[i+1] == '\'') {
+						res += " "
+					}
+					temp = ""
+					continue
+				}
+			}
+		}
+		res += string(runes[i])
+	}
+	return res
 }
