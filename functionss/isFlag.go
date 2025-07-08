@@ -2,6 +2,7 @@ package goreloaded
 
 import "strings"
 
+// check the flage have the correcte end
 func CorrectEnd(s string) bool {
 	for i := 0; i < len(s); i++ {
 
@@ -11,6 +12,7 @@ func CorrectEnd(s string) bool {
 	}
 	return false
 }
+// chek the valid flag
 func IsFlag(s []string ) bool {
 	for i := 0; i < len(s); i++ {
 		if (s[i] == "(up," && i+1 < len(s)) && CorrectEnd(s[i+1]) {

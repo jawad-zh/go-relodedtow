@@ -6,7 +6,7 @@ func Clean(s string)[]string{
 	runes:= []rune(s)
 	for i:=0 ; i < len(runes) ; i++{
 		char := runes[i]
-		if char != ' ' && char != '\n' && char !='\r' && char != '\u200b' {
+		if char != ' ' {
 			word += string(char)
 		}else{
 			if word != ""{
@@ -14,13 +14,12 @@ func Clean(s string)[]string{
 				word= ""
 			}
 		}
-		if char == '\n' || char == '\r' || char == '\u200b' {
-			words = append(words, string(char))
-		}
 	}
+	// last word
 	if word != ""{
 		words = append(words, word)
 	}
+	// clean ""
 	var Result []string 
 	for j:=0 ; j < len(words) ; j++{
 		if words[j] != ""{

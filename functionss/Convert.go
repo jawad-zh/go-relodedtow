@@ -11,69 +11,41 @@ func Convert(s []string) []string {
 		switch s[i] {
 		case "(up)", "(low)", "(cap)":
 			if i > 0 {
-				for j := i - 1; j >= 0; j-- {
-					if s[j] == "\n" {
-						break
-					}
-					if !IsControlStr(s[j]) {
-						s[j] = applySingleFlag(s[i], s[j])
-						break
-					}
-				}
+				s[i-1] = applySingleFlag(s[i], s[i-1])
 			}
 			s[i] = ""
 			s = Rmov(s)
-			i--
-
+			i=-1
 		case "(hex)":
 			if i > 0 {
-				for j := i - 1; j >= 0; j-- {
-					if s[j] == "\n" {
-						break
-					}
-					if !IsControlStr(s[j]) {
-						val, err := strconv.ParseInt(s[j], 16, 64)
-						if err != nil {
-							fmt.Println("Error: invalid hex:", s[j])
-						} else {
-							s[j] = strconv.Itoa(int(val))
-						}
-						break
-					}
+				val, err := strconv.ParseInt(s[i-1], 16, 64)
+				if err != nil {
+					fmt.Println("Error: invalid hex:", s[i-1])
+				} else {
+					s[i-1] = strconv.Itoa(int(val))
 				}
 			}
 			s[i] = ""
 			s = Rmov(s)
-			i--
-
+			i=-1
 		case "(bin)":
 			if i > 0 {
-				for j := i - 1; j >= 0; j-- {
-					if s[j] == "\n" {
-						break
-					}
-					if !IsControlStr(s[j]) {
-						val, err := strconv.ParseInt(s[j], 2, 64)
-						if err != nil {
-							fmt.Println("Error: invalid binary:", s[j])
-						} else {
-							s[j] = strconv.Itoa(int(val))
-						}
-						break
-					}
+				val, err := strconv.ParseInt(s[i-1], 2, 64)
+				if err != nil {
+					fmt.Println("Error: invalid binary:", s[i-1])
+				} else {
+					s[i-1] = strconv.Itoa(int(val))
 				}
 			}
 			s[i] = ""
 			s = Rmov(s)
-			i--
+			i=-1
 		}
-
 		// Handle (up,n), (low,n), (cap,n)
-		if i < len(s)-1 && IsFlag(s) && CorrectEnd(s[i+1]) {
+		if i < len(s)-1 && IsFlag(s) {
 			nStr := strings.TrimSuffix(s[i+1], ")")
 			n, err := strconv.Atoi(nStr)
 			if err != nil {
-				
 				continue
 			}
 			switch s[i] {
@@ -87,13 +59,13 @@ func Convert(s []string) []string {
 			s[i] = ""
 			s[i+1] = ""
 			s = Rmov(s)
-			i=-1
+			i = -1
 
 		}
 	}
 	return s
 }
-
+// apply the valid flag
 func applySingleFlag(flag, word string) string {
 	switch flag {
 	case "(up)":
@@ -106,22 +78,16 @@ func applySingleFlag(flag, word string) string {
 		return word
 	}
 }
-
+// apply the valid flag with n
 func ApplyNFlag(s []string, index int, n int, transform func(string) string) {
 	count := 0
 	for j := index - 1; j >= 0 && count < n; j-- {
-		if s[j] == "\n" {
-			break
-		}
-		if !IsControlStr(s[j]) {
-			s[j] = transform(s[j])
-			count++
-		}
+		s[j] = transform(s[j])
+		count++
 	}
 }
-
+// remove the empty string
 func Rmov(s []string) []string {
-
 	var result []string
 	for _, word := range s {
 		if word != "" {
